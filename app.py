@@ -27,7 +27,7 @@ def csv_upload():
 
     data = pd.read_csv(filebuf, sep=';', encoding='utf8')
     data = data.fillna('')
-    app.logger.debug(data.info())
+    # app.logger.debug(data.info())
 
     errors = []
     macros = []
@@ -38,7 +38,8 @@ def csv_upload():
     for index, row in data.iterrows():
         try:
             # app.logger.info(f'Process macro {row.title}')
-            macro = macro_service.proccess_row(row, False)
+            update = request.form.get('update', '').lower() == 'true'
+            macro = macro_service.proccess_row(row, update)
             macros.append(macro)
         except Exception as err:
             errors.append(f'Error in macro [{index}] {row[0]} >> {err}')
