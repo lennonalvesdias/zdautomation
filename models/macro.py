@@ -1,5 +1,5 @@
 import json
-from commons import clean_dict
+from models.commons import clean_dict
 
 
 class Macro(object):
