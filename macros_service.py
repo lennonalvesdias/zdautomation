@@ -1,6 +1,7 @@
 import logging
 from api.zendesk import Client
 from models.macro import Macro
+from utils import has_value
 import json
 
 
@@ -21,21 +22,15 @@ class MacroService(object):
         else:
             return macro
 
-    def has_value(self, row, column):
-        if not row.empty and column in row and row[column] and str(row[column]) != 'nan':
-            return True
-        else:
-            return False
-
     def get_customfield_action(self, field_title, field_value, option_name):
         field_id = self.client.GetFieldId(field_title)
         value = field_value if field_value else self.client.GetFieldOptionValue(field_id, option_name)
         return f'custom_fields_{field_id}', value
 
     def get_comment(self, row):
-        if self.has_value(row, 'comment_html'):
+        if has_value(row, 'comment_html'):
             return row.comment_html
-        elif self.has_value(row, 'comment'):
+        elif has_value(row, 'comment'):
             comment_html = "<p>" + row.comment.replace("\n", "<br>") + "</p>"
             return comment_html
         else:
@@ -46,63 +41,63 @@ class MacroService(object):
         macro.AddAction('comment_mode_is_public', 'true' if row.comment_public else 'false')
 
     def add_status(self, macro, row):
-        if self.has_value(row, 'status'):
+        if has_value(row, 'status'):
             macro.AddAction('status', self.client.TranslateStatus(row.status))
 
     def add_forms(self, macro, row):
-        if self.has_value(row, 'forms'):
+        if has_value(row, 'forms'):
             macro.AddAction('ticket_form_id', self.client.GetFormId(row.forms))
 
     def add_subject(self, macro, row):
-        if self.has_value(row, 'subject'):
+        if has_value(row, 'subject'):
             macro.AddAction('subject', row.subject)
 
     def add_tags(self, macro, row):
-        if self.has_value(row, 'tags'):
+        if has_value(row, 'tags'):
             macro.AddAction('current_tags', row.tags)
 
     def add_classification_tree(self, macro, row):
-        if self.has_value(row, 'arvore_classificacao'):
+        if has_value(row, 'arvore_classificacao'):
             field, value = self.get_customfield_action('Árvore de Classificação', None, row.arvore_classificacao)
             macro.AddAction(field, value)
 
     def add_product(self, macro, row):
-        if self.has_value(row, 'product_name') and self.has_value(row, 'product_value'):
+        if has_value(row, 'product_name') and has_value(row, 'product_value'):
             field, value = self.get_customfield_action(f'Produto: {row.product_name}', None, row.product_value)
             macro.AddAction(field, value)
 
     def add_reason(self, macro, row):
-        if self.has_value(row, 'product_value') and self.has_value(row, 'reason'):
+        if has_value(row, 'product_value') and has_value(row, 'reason'):
             field, value = self.get_customfield_action(f'Motivo: {row.product_value}', None, row.reason)
             macro.AddAction(field, value)
 
     def add_secondary_reason(self, macro, row):
-        if self.has_value(row, 'reason') and self.has_value(row, 'secondary_reason'):
+        if has_value(row, 'reason') and has_value(row, 'secondary_reason'):
             field, value = self.get_customfield_action(f'Submotivo: {row.reason}', None, row.secondary_reason)
             macro.AddAction(field, value)
 
     def add_n2_area(self, macro, row):
-        if self.has_value(row, 'n2_area'):
+        if has_value(row, 'n2_area'):
             field, value = self.get_customfield_action(f'Áreas N2', None, row.n2_area)
             macro.AddAction(field, value)
 
     def add_n2_classification(self, macro, row):
-        if self.has_value(row, 'n2_classification'):
+        if has_value(row, 'n2_classification'):
             field, value = self.get_customfield_action(f'Classificação N2', None, row.n2_classification)
             macro.AddAction(field, value)
 
     def add_n2_detail(self, macro, row):
-        if self.has_value(row, 'n2_detail'):
+        if has_value(row, 'n2_detail'):
             field, value = self.get_customfield_action(f'Detalhe da Classificação N2', None, row.n2_detail)
             macro.AddAction(field, value)
 
     def add_topic(self, macro, row):
-        if self.has_value(row, 'topic'):
+        if has_value(row, 'topic'):
             field, value = self.get_customfield_action(f'Tema', None, row.topic)
             macro.AddAction(field, value)
 
     def add_restriction(self, macro, row):
-        if self.has_value(row, 'restriction'):
+        if has_value(row, 'restriction'):
             ids = self.client.GetGroupIds(row.restriction)
             macro.SetRestriction({'type': 'Group', 'id': ids[0], 'ids': ids})
 
