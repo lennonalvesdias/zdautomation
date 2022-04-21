@@ -163,3 +163,4 @@ logs/*.log
 **/*.zip
 out/*
 *.sqlite
+public/files/*
