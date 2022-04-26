@@ -10,3 +10,7 @@ services:
       - zendesk
     ports:
       - 5000:5000
+
+networks:
+  zendesk:
+    driver: bridge
