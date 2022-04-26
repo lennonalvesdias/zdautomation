@@ -138,3 +138,12 @@ class MacroService(object):
             if update:
                 self.client.MacroCreate(payload)
         return payload
+
+    def delete_many(self, macros):
+        macros_range = 100
+        macros_ids = [str(macro['id']) for macro in macros]
+        ids_by_range = [macros_ids[i:i + macros_range] for i in range(0, len(macros_ids), macros_range)]
+        for ids in ids_by_range:
+            ids_join = ','.join(ids)
+            logging.info(f'Delete macros {ids_join}')
+            self.client.MacroDeleteMany(ids_join)
