@@ -1,7 +1,12 @@
-version: '3'
+version: '3.4'
 
 services:
   app:
     build: .
+    labels:
+      - "python"
+    container_name: "zd_automation_app"
+    networks:
+      - zendesk
     ports:
-      - "5000:5000"
+      - 5000:5000
