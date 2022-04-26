@@ -122,7 +122,7 @@ class MacroService(object):
         macro = Macro(None, row.title, row.description, row.active, [], {}, None, None, None, None)
         if macro.title in self.titles:
             logging.warning(f'Macro {macro.title} already exists on this worksheet.')
-            return
+            raise Exception(f'Macro {macro.title} already exists on this worksheet.')
         self.titles.append(macro.title)
         macro = self.macro_exist(macros, macro)
         # print(json.loads(macro.ToJson()))
