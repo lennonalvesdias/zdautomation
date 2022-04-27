@@ -1,3 +1,4 @@
+import sys
 import logging
 from api.zendesk import Client
 from models.macro import Macro
@@ -126,7 +127,7 @@ class MacroService(object):
         self.titles.append(macro.title)
         macro = self.macro_exist(macros, macro)
         # print(json.loads(macro.ToJson()))
-        if 'id' in macro.__dict__:
+        if 'id' in macro.__dict__ and macro.id:
             macro.CleanActions()
             self.process_macro(macro, row)
             payload = json.loads(macro.ToJson())
