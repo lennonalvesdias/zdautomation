@@ -1,11 +1,11 @@
+from datetime import datetime
+from api.zendesk import Client as ZenClient
+from macros_service import MacroService
+from dotenv import dotenv_values
+import logging
 import sys
 sys.path.append('C:\\Users\\Lennon\\Projects\\xp\\zendesk\\zdautomation')
 
-import logging
-from dotenv import dotenv_values
-from macros_service import MacroService
-from api.zendesk import Client as ZenClient
-from datetime import datetime
 
 env = 'HML'
 config = dotenv_values(f'.env')
