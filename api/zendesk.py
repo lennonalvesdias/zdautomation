@@ -33,6 +33,10 @@ class Client(object):
         if status == 'Fechado':
             return 'closed'
 
+    def Next(self, url):
+        response = self.session.get(url, verify=False)
+        return response.json()
+
     def TicketShow(self, id):
         url = f'https://{self.subdomain}.zendesk.com/api/v2/tickets/{id}.json'
         response = self.session.get(url, verify=False)
@@ -40,12 +44,11 @@ class Client(object):
         return response.json()
 
     def TicketPaginate(self, params):
-        tickets = []
         response = self.SearchExport(params)
-        while len(response['results']) > 0:
+        tickets = response['results']
+        while response['meta']['has_more']:
+            response = self.Next(response['links']['next'])
             tickets += response['results']
-            params['page[after]'] = response['meta']['after_cursor']
-            response = self.SearchExport(params)
         return tickets
 
     def TicketListComment(self, id):
