@@ -24,8 +24,8 @@ class MacroService(object):
             return macro
 
     def get_customfield_action(self, field_title, field_value, option_name):
-        field_id = self.client.GetFieldId(field_title)
-        value = field_value if field_value else self.client.GetFieldOptionValue(field_id, option_name)
+        field_id = self.client.GetFieldId(field_title.strip())
+        value = field_value if field_value else self.client.GetFieldOptionValue(field_id, option_name.strip())
         return f'custom_fields_{field_id}', value
 
     def get_comment(self, row):
@@ -38,75 +38,117 @@ class MacroService(object):
             return None
 
     def add_comment(self, macro, row):
-        macro.AddAction('comment_value_html', self.get_comment(row))
-        macro.AddAction('comment_mode_is_public', 'true' if row.comment_public else 'false')
+        try:
+            macro.AddAction('comment_value_html', self.get_comment(row))
+            macro.AddAction('comment_mode_is_public', 'true' if row.comment_public else 'false')
+        except Exception as err:
+            raise Exception(f'Error in add_comment: {err}')
 
     def add_status(self, macro, row):
-        if has_value(row, 'status'):
-            macro.AddAction('status', self.client.TranslateStatus(row.status))
+        try:
+            if has_value(row, 'status'):
+                macro.AddAction('status', self.client.TranslateStatus(row.status))
+        except Exception as err:
+            raise Exception(f'Error in add_status: {err}')
 
     def add_forms(self, macro, row):
-        if has_value(row, 'forms'):
-            macro.AddAction('ticket_form_id', self.client.GetFormId(row.forms))
+        try:
+            if has_value(row, 'forms'):
+                macro.AddAction('ticket_form_id', self.client.GetFormId(row.forms))
+        except Exception as err:
+            raise Exception(f'Error in add_forms: {err}')
 
     def add_subject(self, macro, row):
-        if has_value(row, 'subject'):
-            macro.AddAction('subject', row.subject)
+        try:
+            if has_value(row, 'subject'):
+                macro.AddAction('subject', row.subject)
+        except Exception as err:
+            raise Exception(f'Error in add_subject: {err}')
 
     def add_tags(self, macro, row):
-        if has_value(row, 'tags'):
-            macro.AddAction('current_tags', row.tags)
+        try:
+            if has_value(row, 'tags'):
+                macro.AddAction('current_tags', row.tags)
+        except Exception as err:
+            raise Exception(f'Error in add_tags: {err}')
 
     def add_classification_tree(self, macro, row):
-        if has_value(row, 'arvore_classificacao'):
-            field, value = self.get_customfield_action('Árvore de Classificação', None, row.arvore_classificacao)
-            macro.AddAction(field, value)
-        if has_value(row, 'arvore_classificacao_n2'):
-            field, value = self.get_customfield_action('Árvore de Classificação - N2', None, row.arvore_classificacao)
-            macro.AddAction(field, value)
-        if has_value(row, 'arvore_classificacao_sac'):
-            field, value = self.get_customfield_action('Árvore de Classificação - SAC', None, row.arvore_classificacao)
-            macro.AddAction(field, value)
+        try:
+            if has_value(row, 'arvore_classificacao'):
+                field, value = self.get_customfield_action('Árvore de Classificação', None, row.arvore_classificacao)
+                macro.AddAction(field, value)
+            if has_value(row, 'arvore_classificacao_n2'):
+                field, value = self.get_customfield_action('Árvore de Classificação - N2', None, row.arvore_classificacao)
+                macro.AddAction(field, value)
+            if has_value(row, 'arvore_classificacao_sac'):
+                field, value = self.get_customfield_action('Árvore de Classificação - SAC', None, row.arvore_classificacao)
+                macro.AddAction(field, value)
+        except Exception as err:
+            raise Exception(f'Error in classification_tree: {err}')
 
     def add_product(self, macro, row):
-        if has_value(row, 'product_name') and has_value(row, 'product_value'):
-            field, value = self.get_customfield_action(f'Produto: {row.product_name}', None, row.product_value)
-            macro.AddAction(field, value)
+        try:
+            if has_value(row, 'product_name') and has_value(row, 'product_value'):
+                field, value = self.get_customfield_action(f'Produto: {row.product_name}', None, row.product_value)
+                macro.AddAction(field, value)
+        except Exception as err:
+            raise Exception(f'Error in add_product: {err}')
 
     def add_reason(self, macro, row):
-        if has_value(row, 'product_value') and has_value(row, 'reason'):
-            field, value = self.get_customfield_action(f'Motivo: {row.product_value}', None, row.reason)
-            macro.AddAction(field, value)
+        try:
+            if has_value(row, 'product_value') and has_value(row, 'reason'):
+                field, value = self.get_customfield_action(f'Motivo: {row.product_value}', None, row.reason)
+                macro.AddAction(field, value)
+        except Exception as err:
+            raise Exception(f'Error in add_reason: {err}')
 
     def add_secondary_reason(self, macro, row):
-        if has_value(row, 'reason') and has_value(row, 'secondary_reason'):
-            field, value = self.get_customfield_action(f'Submotivo: {row.reason}', None, row.secondary_reason)
-            macro.AddAction(field, value)
+        try:
+            if has_value(row, 'reason') and has_value(row, 'secondary_reason'):
+                field, value = self.get_customfield_action(f'Submotivo: {row.reason}', None, row.secondary_reason)
+                macro.AddAction(field, value)
+        except Exception as err:
+            raise Exception(f'Error in add_secondary_reason: {err}')
 
     def add_n2_area(self, macro, row):
-        if has_value(row, 'n2_area'):
-            field, value = self.get_customfield_action(f'Áreas N2', None, row.n2_area)
-            macro.AddAction(field, value)
+        try:
+            if has_value(row, 'n2_area'):
+                field, value = self.get_customfield_action(f'Áreas N2', None, row.n2_area)
+                macro.AddAction(field, value)
+        except Exception as err:
+            raise Exception(f'Error in add_n2_area: {err}')
 
     def add_n2_classification(self, macro, row):
-        if has_value(row, 'n2_classification'):
-            field, value = self.get_customfield_action(f'Classificação N2', None, row.n2_classification)
-            macro.AddAction(field, value)
+        try:
+            if has_value(row, 'n2_classification'):
+                field, value = self.get_customfield_action(f'Classificação N2', None, row.n2_classification)
+                macro.AddAction(field, value)
+        except Exception as err:
+            raise Exception(f'Error in add_n2_classification: {err}')
 
     def add_n2_detail(self, macro, row):
-        if has_value(row, 'n2_detail'):
-            field, value = self.get_customfield_action(f'Detalhe da Classificação N2', None, row.n2_detail)
-            macro.AddAction(field, value)
+        try:
+            if has_value(row, 'n2_detail'):
+                field, value = self.get_customfield_action(f'Detalhe da Classificação N2', None, row.n2_detail)
+                macro.AddAction(field, value)
+        except Exception as err:
+            raise Exception(f'Error in add_n2_detail: {err}')
 
     def add_topic(self, macro, row):
-        if has_value(row, 'topic'):
-            field, value = self.get_customfield_action(f'Tema', None, row.topic)
-            macro.AddAction(field, value)
+        try:
+            if has_value(row, 'topic'):
+                field, value = self.get_customfield_action(f'Tema', None, row.topic)
+                macro.AddAction(field, value)
+        except Exception as err:
+            raise Exception(f'Error in add_topic: {err}')
 
     def add_restriction(self, macro, row):
-        if has_value(row, 'restriction'):
-            ids = self.client.GetGroupIds(row.restriction)
-            macro.SetRestriction({'type': 'Group', 'id': ids[0], 'ids': ids})
+        try:
+            if has_value(row, 'restriction'):
+                ids = self.client.GetGroupIds(row.restriction)
+                macro.SetRestriction({'type': 'Group', 'id': ids[0], 'ids': ids})
+        except Exception as err:
+            raise Exception(f'Error in add_restriction: {err}')
 
     def process_macro(self, macro, row):
         self.add_comment(macro, row)
