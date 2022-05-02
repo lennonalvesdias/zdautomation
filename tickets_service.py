@@ -38,7 +38,7 @@ class TicketService(object):
         }
         return self.client.TicketPaginate(params)
 
-    def updateTicketsStatus(self, tickets, status_update, n=100):
+    def UpdateTicketsStatus(self, tickets, status_update, n=100):
         tickets_ids = [str(ticket['id']) for ticket in tickets]
         ids_by_range = [tickets_ids[i:i + n] for i in range(0, len(tickets_ids), n)]
         for ids in ids_by_range:
@@ -47,7 +47,7 @@ class TicketService(object):
             self.logging.debug(updated)
             time.sleep(2)
 
-    def get_ticket_attachments(self, ticket):
+    def GetTicketAttachments(self, ticket):
         ticket_id = ticket['id']
         comments = self.client.TicketListComment(ticket_id)
         attachments = [comment['attachments'] for comment in comments['comments']]

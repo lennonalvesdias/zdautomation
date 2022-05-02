@@ -38,7 +38,7 @@ def extract():
         field = next((field for field in ticket['custom_fields'] if field["id"] == cf_cpf), None)
         cpf = field['value']
         ticket_id = ticket['id']
-        attachments = ticket_service.get_ticket_attachments(ticket)
+        attachments = ticket_service.GetTicketAttachments(ticket)
         Path(f'assets/{cpf}/{ticket_id}').mkdir(parents=True, exist_ok=True)
         for attachment in attachments:
             myuuid = uuid.uuid4()

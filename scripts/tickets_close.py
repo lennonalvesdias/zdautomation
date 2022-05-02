@@ -27,25 +27,28 @@ def close_ura_tickets():
     query_service.add_custom_field(cf_canal_de_entrada, 'canal_de_entrada_ura')
     query_service.add_status('solved')
     query = query_service.build()
+    logging.info(f'Query: {query}')
     tickets = ticket_service.list_by_query(query)
     logging.info(f'Found {len(tickets)} tickets')
-    ticket_service.updateTicketsStatus(tickets, 'closed')
+    ticket_service.UpdateTicketsStatus(tickets, 'closed')
 
 
 def close_old_tickets():
     query_service = TicketQueryService()
     query_service.add_date_init('2022-04-15T00:00:00Z')
-    query_service.add_status('solved')
+    query_service.add_status('pending')
     query = query_service.build()
+    logging.info(f'Query: {query}')
     tickets = ticket_service.list_by_query(query)
     logging.info(f'Found {len(tickets)} tickets')
-    ticket_service.updateTicketsStatus(tickets, 'closed')
+    logging.debug([str(ticket['id']) for ticket in tickets])
+    # ticket_service.UpdateTicketsStatus(tickets, 'closed')
 
 
 def main():
     try:
-        close_ura_tickets()
-        # close_old_tickets()
+        # close_ura_tickets()
+        close_old_tickets()
     except Exception as err:
         logging.error(err)
 
