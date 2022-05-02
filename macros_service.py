@@ -39,8 +39,10 @@ class MacroService(object):
 
     def add_comment(self, macro, row):
         try:
-            macro.AddAction('comment_value_html', self.get_comment(row))
-            macro.AddAction('comment_mode_is_public', 'true' if row.comment_public else 'false')
+            comment = self.get_comment(row)
+            if comment:
+                macro.AddAction('comment_value_html', comment)
+                macro.AddAction('comment_mode_is_public', 'true' if row.comment_public else 'false')
         except Exception as err:
             raise Exception(f'Error in add_comment: {err}')
 
