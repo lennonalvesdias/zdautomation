@@ -45,8 +45,10 @@ def csv_upload():
             errors.append(f'Error in macro [{index}] {row[0]} >> {err}')
             app.logger.error(traceback.format_exc())
 
+    creates, updates = macro_service.summary()
+
     return jsonify(
-        message=f'Arquivo {filebuf.filename!r} encontrado. {len(macros)} linha(s) com sucesso e {len(errors)} com erro(s).',
+        message=f'Arquivo {filebuf.filename!r} encontrado. {len(macros)} linha(s) com sucesso e {len(errors)} com erro(s). {creates} macros criadas e {updates} macros atualizadas.',
         macros=macros,
         errors=errors), 200
 

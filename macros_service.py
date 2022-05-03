@@ -10,6 +10,8 @@ class MacroService(object):
     def __init__(self, client: Client):
         self.client = client
         self.titles = []
+        self.creates = 0
+        self.updates = 0
 
     def filter_macro_by_title(self, macros, title):
         macro = [item for item in macros if item.get('title').lower() == title.strip().lower()]
@@ -117,6 +119,9 @@ class MacroService(object):
             if has_value(row, 'n2_area'):
                 field, value = self.get_customfield_action(f'Áreas N2', None, row.n2_area)
                 macro.AddAction(field, value)
+            if has_value(row, 'n2_area_sac'):
+                field, value = self.get_customfield_action(f'Áreas N2 SAC', None, row.n2_area_sac)
+                macro.AddAction(field, value)
         except Exception as err:
             raise Exception(f'Error in add_n2_area: {err}')
 
@@ -125,6 +130,9 @@ class MacroService(object):
             if has_value(row, 'n2_classification'):
                 field, value = self.get_customfield_action(f'Classificação N2', None, row.n2_classification)
                 macro.AddAction(field, value)
+            if has_value(row, 'n2_classification_sac'):
+                field, value = self.get_customfield_action(f'Classificação N2 SAC', None, row.n2_classification_sac)
+                macro.AddAction(field, value)
         except Exception as err:
             raise Exception(f'Error in add_n2_classification: {err}')
 
@@ -132,6 +140,9 @@ class MacroService(object):
         try:
             if has_value(row, 'n2_detail'):
                 field, value = self.get_customfield_action(f'Detalhe da Classificação N2', None, row.n2_detail)
+                macro.AddAction(field, value)
+            if has_value(row, 'n2_detail_sac'):
+                field, value = self.get_customfield_action(f'Detalhe da Classificação N2 SAC', None, row.n2_detail_sac)
                 macro.AddAction(field, value)
         except Exception as err:
             raise Exception(f'Error in add_n2_detail: {err}')
@@ -182,12 +193,14 @@ class MacroService(object):
             self.process_macro(macro, row)
             payload = json.loads(macro.ToJson())
             if update:
+                self.creates += 1
                 logging.info(f'Updating {macro.title} in zendesk.')
                 self.client.MacroUpdate(macro.id, payload)
         else:
             self.process_macro(macro, row)
             payload = json.loads(macro.ToJson())
             if update:
+                self.updates += 1
                 logging.info(f'Creating {macro.title} in zendesk.')
                 self.client.MacroCreate(payload)
         return payload
@@ -200,3 +213,6 @@ class MacroService(object):
             ids_join = ','.join(ids)
             logging.info(f'Delete macros {ids_join}')
             self.client.MacroDeleteMany(ids_join)
+
+    def summary(self):
+        return self.creates, self.updates
