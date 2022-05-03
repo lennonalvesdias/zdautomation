@@ -82,10 +82,10 @@ class MacroService(object):
                 field, value = self.get_customfield_action('Árvore de Classificação', None, row.arvore_classificacao)
                 macro.AddAction(field, value)
             if has_value(row, 'arvore_classificacao_n2'):
-                field, value = self.get_customfield_action('Árvore de Classificação - N2', None, row.arvore_classificacao)
+                field, value = self.get_customfield_action('Árvore de Classificação - N2', None, row.arvore_classificacao_n2)
                 macro.AddAction(field, value)
             if has_value(row, 'arvore_classificacao_sac'):
-                field, value = self.get_customfield_action('Árvore de Classificação - SAC', None, row.arvore_classificacao)
+                field, value = self.get_customfield_action('Árvore de Classificação - SAC', None, row.arvore_classificacao_sac)
                 macro.AddAction(field, value)
         except Exception as err:
             raise Exception(f'Error in classification_tree: {err}')
