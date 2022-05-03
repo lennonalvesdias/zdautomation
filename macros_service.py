@@ -193,14 +193,14 @@ class MacroService(object):
             self.process_macro(macro, row)
             payload = json.loads(macro.ToJson())
             if update:
-                self.creates += 1
+                self.updates += 1
                 logging.info(f'Updating {macro.title} in zendesk.')
                 self.client.MacroUpdate(macro.id, payload)
         else:
             self.process_macro(macro, row)
             payload = json.loads(macro.ToJson())
             if update:
-                self.updates += 1
+                self.creates += 1
                 logging.info(f'Creating {macro.title} in zendesk.')
                 self.client.MacroCreate(payload)
         return payload
